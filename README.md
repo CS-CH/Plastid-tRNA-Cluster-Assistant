@@ -6,9 +6,9 @@ Prior to using these scripts, tRNA genes must be annotated directly from the gen
 
 After generating a combined annotation, the scripts parse_trna_gff.py and add_sequences_to_gff.py can be used to:
 
-Calculate annotated exon regions and intergenic/spacer regions.
+1. Calculate annotated exon regions and intergenic/spacer regions.
 
-Extract corresponding sequences for downstream analyses.
+2. Extract corresponding sequences for downstream analyses.
 
 Spacer and intergenic validation is critical before defining tRNA genes or tRNA gene clusters. Tools such as Geseq or Geneious can be used to examine both spacer regions between annotated exons of the same tRNA gene and intergenic regions between different tRNA genes. This step ensures that no other genes or genomic features are located within these regions. Manual curation is typically required to confirm introns and the true adjacency of specific tRNA genes.
 
