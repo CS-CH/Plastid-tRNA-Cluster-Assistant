@@ -1,3 +1,5 @@
+# Plastid tRNA Cluster Analysis Scripts
+
 This repository provides a set of general-purpose scripts for analyzing plastid tRNAs that contain introns and gene clusters.
 
 Prior to using these scripts, tRNA genes must be annotated directly from the genome using tRNAscan-SE. Similarity searches should be performed using BLASTN, Geneious, or other tools, followed by validation of the annotations using tRNAscan-SE. Verified hits should then be filtered and merged with the direct genome scan results to ensure accurate tRNA gene predictions.
