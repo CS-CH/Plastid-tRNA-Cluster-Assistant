@@ -17,36 +17,17 @@ Once exon connectivity and intergenic regions are confirmed, `tRNA_Matrix_Genera
 
 ## 2. Conservation analysis of intron-containing tRNAs
 
-`analysis/01_phylop_introns/` contains the per-nucleotide conservation analysis of the four intron-containing plastid tRNAs (trnA-UGC, trnG-UCC, trnI-GAU, trnL-UAA) across 3,699 plastome accessions. The accessions are split into six disjoint random subsets that are analysed independently and then combined, so that significance testing is based on independent estimates rather than on autocorrelated per-site scores.
+To reduce pseudoreplication from correlated alignment sites, `make_species_subsets.py` divides the plastome accessions into disjoint subsets and prunes the phylogenetic tree accordingly. `run_subset_phylop.sh` then applies phyloFit, phyloP and phastCons to each subset, providing single-nucleotide conservation estimates for the four intron-containing plastid tRNAs (trnA-UGC, trnG-UCC, trnI-GAU and trnL-UAA).
 
-Run in order:
-
-1. `make_species_subsets.py` — split the accessions into K disjoint subsets, reusing the rows of the global alignment and pruning the full IQ-TREE topology (original branch lengths are kept and locked with `!` for phyloFit).
-   Usage: `python3 make_species_subsets.py <subset 1..K> [K] [seed] [fit_cols]`
-2. `run_subset_phylop.sh` — per subset: phyloFit (REV + gamma4) followed by phyloP (LRT, CON and ACC) and phastCons.
-   Usage: `bash run_subset_phylop.sh sub1`
-3. `build_conservation_tracks.py` — merge the six subset tracks on a common reference frame and write `perposition_<locus>.tsv` (per-nucleotide scores with 15/20/30 nt sliding-window means), `region_summary_allspecies.tsv`, `intron_occupancy.tsv` and `allspecies_track.npz`.
-4. `hierarchical_subset_tests.py` — block-based (30 bp) and per-site intron-minus-flank contrasts per subset, followed by a one-sample t-test across the six subsets.
-5. `compute_subset_effects.py` — per-subset effect sizes (intron minus flank, core columns with >=50% global coverage) and the corresponding cross-subset test.
+After the subset analyses, `build_conservation_tracks.py` combines the scores on a common reference. `hierarchical_subset_tests.py` and `compute_subset_effects.py` compare introns with their flanking exons across subsets to estimate effect sizes and assess significance, rather than treating adjacent alignment sites as independent observations.
 
 ## 3. Intergenic-region analysis
 
-`analysis/02_intergenic_3pairs/analyze_intergenic_regions.py` analyses the intergenic regions of three tRNA pairs (trnG-UCC/trnR-UCU, trnI-GAU/trnA-UGC, trnL-UAA/trnF-GAA): length distributions, base composition, 8-mer scan with mononucleotide-model enrichment and reliability tiers, assembly of high-confidence 8-mers into core elements, and BLASTN all-against-all similarity. The G-fM pair is excluded (monocot-only subset without a tobacco record).
+`analyze_intergenic_regions.py` compares the intergenic regions of three tRNA gene pairs to identify sequence features associated with tRNA clustering. It summarizes length and base composition, identifies 8-mers enriched against a mononucleotide background, and evaluates their reliability using coverage, positional consistency, sequence complexity and possible flank-gene leakage.
+
+High-confidence 8-mers are assembled into candidate core elements, while BLASTN is used to assess sequence similarity among regions. The resulting tables and figures can be used to examine conserved features that may contribute to tRNA clustering.
 
 ## Requirements
 
-- Python 3 with numpy, openpyxl, matplotlib; scipy is optional (exact p-values); Biopython is required by `add_sequences_to_gff.py`.
+- Python 3 with NumPy, SciPy, openpyxl and matplotlib; Biopython is required by `add_sequences_to_gff.py`.
 - tRNAscan-SE, PHAST (phyloFit, phyloP, phastCons), IQ-TREE, bedtools and NCBI BLAST+ on the command line.
-- The conservation workflow is designed for a Linux/WSL environment.
-
-## Inputs and paths
-
-The analysis scripts keep the working directories of the original analysis environment (`/root/trna/work`, `/mnt/c/Users/chang/Desktop/tRNA_migrate`, `C:\Users\chang\Desktop\tRNA_migrate`). Adjust these constants before rerunning.
-
-Required input data:
-
-- `chloALL/`: global alignment (`aln/concat.fasta`, `aln/layout.tsv`), `col_region.npz`, `regions.tsv`, `taxa.txt` and `tree/concat.treefile`.
-- `records.tsv`: accession-to-group mapping for the intergenic analysis.
-- `Dataset5_phylogeny.xlsx`: pair sheets containing the intergenic sequences.
-
-See `analysis/README.md` for further details on the analysis workflows.
