@@ -17,7 +17,7 @@ Once exon connectivity and intergenic regions are confirmed, `tRNA_Matrix_Genera
 
 ## 2. Conservation analysis of intron-containing tRNAs
 
-To reduce pseudoreplication from correlated alignment sites, `make_species_subsets.py` divides the plastome accessions into disjoint subsets and prunes the phylogenetic tree accordingly. `run_subset_phylop.sh` then applies phyloFit, phyloP and phastCons to each subset, providing single-nucleotide conservation estimates for the four intron-containing plastid tRNAs (trnA-UGC, trnG-UCC, trnI-GAU and trnL-UAA).
+Single-nucleotide conservation of the four intron-containing plastid tRNAs (trnA-UGC, trnG-UCC, trnI-GAU and trnL-UAA) was estimated with phyloFit, phyloP and phastCons. Accessions were split into six disjoint subsets by make_species_subsets.py and run_subset_phylop.sh when a single all-accession PHAST run produced degenerate gamma-rate weights or matrix-exponential overflow during phyloFit.
 
 After the subset analyses, `build_conservation_tracks.py` combines the scores on a common reference. `hierarchical_subset_tests.py` and `compute_subset_effects.py` compare introns with their flanking exons across subsets to estimate effect sizes and assess significance, rather than treating adjacent alignment sites as independent observations.
 
