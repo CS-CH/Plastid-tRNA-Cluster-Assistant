@@ -19,15 +19,13 @@ Once exon connectivity and intergenic regions are confirmed, `tRNA_Matrix_Genera
 
 Single-nucleotide conservation of the four intron-containing plastid tRNAs (trnA-UGC, trnG-UCC, trnI-GAU and trnL-UAA) was estimated with phyloFit, phyloP and phastCons. Accessions were split into six disjoint subsets by make_species_subsets.py and run_subset_phylop.sh when a single all-accession PHAST run produced degenerate gamma-rate weights or matrix-exponential overflow during phyloFit.
 
-After the subset analyses, `build_conservation_tracks.py` combines the scores on a common reference. `hierarchical_subset_tests.py` and `compute_subset_effects.py` compare introns with their flanking exons across subsets to estimate effect sizes and assess significance, rather than treating adjacent alignment sites as independent observations.
+After generating and scoring `sub1` through `sub6`, `build_conservation_tracks.py` averages the six CON tracks, maps them to a common reference sequence and calculates 15-bp sliding-window means. The resulting four-panel plot shows per-nucleotide scores and window means for trnG-UCC, trnL-UAA, trnI-GAU and trnA-UGC, together with their flank, exon and intron regions.
 
 ## 3. Intergenic-region analysis
 
-`analyze_intergenic_regions.py` compares the intergenic regions of three tRNA gene pairs to identify sequence features associated with tRNA clustering. It summarizes length and base composition, identifies 8-mers enriched against a mononucleotide background, and evaluates their reliability using coverage, positional consistency, sequence complexity and possible flank-gene leakage.
-
-High-confidence 8-mers are assembled into candidate core elements, while BLASTN is used to assess sequence similarity among regions. The resulting tables and figures can be used to examine conserved features that may contribute to tRNA clustering.
+`analyze_intergenic_regions.py` reads the sheets for trnG-UCC/trnR-UCU, trnL-UAA/trnF-GAA and trnI-GAU/trnA-UGC from the input workbook and extracts the length of each intergenic sequence. It writes a TSV table and compares the three length distributions using overlaid histograms.
 
 ## Requirements
 
-- Python 3 with NumPy, SciPy, openpyxl and matplotlib; Biopython is required by `add_sequences_to_gff.py`.
-- tRNAscan-SE, PHAST (phyloFit, phyloP, phastCons), IQ-TREE, bedtools and NCBI BLAST+ on the command line.
+- Python 3 with NumPy, openpyxl and matplotlib; Biopython is required by `add_sequences_to_gff.py`.
+- tRNAscan-SE, MAFFT, PHAST (phyloFit and phyloP), IQ-TREE, bedtools and NCBI BLAST+ on the command line.
